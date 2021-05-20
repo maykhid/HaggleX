@@ -57,10 +57,10 @@ class MutationQuery {
     """;
   }
 
-  String verifyUser(int code) {
+  String verifyUser() {
     return """
-    mutation ($code: Int!){
-    verifyUser(data: {code: $code}){
+    mutation (\$code: Int!){
+    verifyUser(data: {code: \$code}){
     user{
       _id
       email

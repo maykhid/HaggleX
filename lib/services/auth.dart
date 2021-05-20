@@ -60,7 +60,8 @@ class Auth with ChangeNotifier {
 
     // print(result.data.toString());
     else {
-      await _keyStore.storeUserId(result.data['register']['user']['_id']);
+      // to store userId
+      // await _keyStore.storeUserId(result.data['register']['user']['_id']);
       return result.data['register']['token'];
     }
   }
@@ -114,7 +115,7 @@ class Auth with ChangeNotifier {
       try {
         await _keyStore.storeToken(token);
         // This provider is just a temp fix. will correct later
-
+        Provider.of<KeyStore>(context, listen: false).updateKeyStatus(keyStatus.FoundToken);
       } catch (e) {
         print('Token is probably null: $e');
       }
@@ -189,8 +190,11 @@ class Auth with ChangeNotifier {
     QueryResult result = await _client.mutate(
       MutationOptions(
         document: gql(
-          _mutationQuery.verifyUser(verificationCode),
+          _mutationQuery.verifyUser(),
         ),
+        variables: {
+          'code': verificationCode,
+        },
       ),
     );
 

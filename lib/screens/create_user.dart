@@ -141,27 +141,30 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                 SizedBox(height: 5.0.h),
 
                 // verify code
-                Padding(
-                  padding: EdgeInsets.only(bottom: 4.0.h),
-                  
-                  child: TextFormField(
-                    style: TextStyle(color: Colors.black),
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
-                    decoration: InputDecoration(
-                      hintText: 'Verification code',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                Form(
+                  key: formKey,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 4.0.h),
+                    child: TextFormField(
+                      style: TextStyle(color: Colors.black),
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      decoration: InputDecoration(
+                        hintText: 'Verification code',
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 2.0.h,
+                        ),
                       ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 2.0.h,
-                      ),
+                      validator: PinValidator.validate,
+                      onSaved: (String value) =>
+                          _verificationCode = int.parse(value),
+                      // color: Colors.black,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                     ),
-                    validator: PinValidator.validate,
-                    onSaved: (String value) => _verificationCode = int.parse(value),
-                    // color: Colors.black,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
                 ),
 
@@ -171,9 +174,16 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                     buttonColor: AppColors.purple,
                     buttonTextColor: Colors.white,
                     buttonText: "Verify me".toUpperCase(),
+
                     onPressed: () {
-                      Provider.of<Auth>(context, listen: false)
-                          .verifyUser(_verificationCode);
+                      if (formKey.currentState.validate()) {
+                        formKey.currentState.save();
+
+                        Provider.of<Auth>(context, listen: false)
+                            .verifyUser(_verificationCode);
+
+                        print('onClick verify $_verificationCode');
+                      }
                     }),
 
                 SizedBox(
@@ -358,7 +368,8 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       'https://restcountries.eu/data/nga.svg',
                       context,
                     );
-                    // Provider.of<Auth>(context, listen: false).updateStatus(Status.shouldVerify);
+                  // Provider.of<Auth>(context, listen: false)
+                  //     .updateStatus(Status.shouldVerify);
                   }
                 },
               ),

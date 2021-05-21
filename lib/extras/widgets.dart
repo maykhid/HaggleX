@@ -158,7 +158,7 @@ class FlagContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 30.0,
-      height: 20.0,
+      height: 30.0,
       // color: Colors.black,
       child: networkSvg,
     );
@@ -169,9 +169,11 @@ class FlagAndCountryCode extends StatelessWidget {
   const FlagAndCountryCode({
     Key key,
     @required this.networkSvg,
+    @required this.callingCode,
   }) : super(key: key);
 
   final SvgPicture networkSvg;
+  final String callingCode;
 
   @override
   Widget build(BuildContext context) {
@@ -191,19 +193,65 @@ class FlagAndCountryCode extends StatelessWidget {
           child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-
           // flag
           FlagContainer(networkSvg: networkSvg),
 
           // country code
           Text(
-            '(+234)',
+            '(+$callingCode)',
             style: TextStyle(
               color: Colors.black,
             ),
           )
         ],
       )),
+    );
+  }
+}
+
+class SearchWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 5.0.h,
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(40.0),
+        color: Colors.white.withOpacity(0.2),
+      ),
+      //
+      child: Row(
+        children: [
+          //
+          SizedBox(
+            width: 2.5.h,
+          ),
+          //
+          Expanded(
+            child: TextField(
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 2.5.h, bottom: 1.5.h),
+                border: InputBorder.none,
+                // focusedBorder: InputBorder.none,
+                // enabledBorder: InputBorder.none,
+                // errorBorder: InputBorder.none,
+                // disabledBorder: InputBorder.none,
+                hintText: "Search for country",
+              ),
+            ),
+          ),
+
+          SizedBox(
+            width: 10.0.w,
+            child: Icon(
+              Icons.search,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

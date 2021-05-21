@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:haggle_x/extras/store.dart';
+import 'package:haggle_x/extras/widgets.dart';
 import 'package:haggle_x/screens/create_user.dart';
 import 'package:haggle_x/screens/login.dart';
 import 'package:haggle_x/services/graphql_config.dart';
@@ -9,9 +11,15 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:haggle_x/extras/store.dart' as Store;
 
+import 'extras/app_colors.dart';
 import 'services/auth.dart';
 
 GraphQlConfig _graphQlConfig = GraphQlConfig();
+
+getLinkSvg(String url) {
+  final networkSvg = SvgPicture.network(url);
+  return networkSvg;
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -133,6 +141,103 @@ class _HomeState extends State<Home> {
             Provider.of<Auth>(context, listen: false).getActiveCountries();
           },
         ),
+      ),
+    );
+  }
+}
+
+class ListCountriesScreen extends StatefulWidget {
+  @override
+  _ListCountriesScreenState createState() => _ListCountriesScreenState();
+}
+
+class _ListCountriesScreenState extends State<ListCountriesScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.purple,
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(left: 2.0.h, right: 2.0.h, top: 2.0.h),
+            child: Column(
+              children: [
+                // search
+                SearchWidget(),
+
+                // line separator
+                Padding(
+                  padding: EdgeInsets.only(top: 2.5.h, bottom: 2.5.h),
+                  child: Container(
+                    height: 0.1.h,
+                    color: Colors.white.withOpacity(0.2),
+                  ),
+                ),
+
+                // list of countries
+                FutureBuilder(
+                  future: Provider.of<Auth>(context).getActiveCountries(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<List> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.none ||
+                        snapshot.hasData == null) {
+                      //print('project snapshot data is: ${projectSnap.data}');
+                      return Container();
+                    }
+                    var snapData = snapshot.data;
+                    return CountriesList(snapData: snapData);
+                  },
+                  // child:
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+}
+
+class CountriesList extends StatelessWidget {
+  const CountriesList({
+    Key key,
+    @required this.snapData,
+  }) : super(key: key);
+
+  final List snapData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70.0.h,
+      child: ListView.builder(
+        itemCount: snapData.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: FlagContainer(
+              networkSvg: getLinkSvg(
+                snapData[index]['flag'],
+              ),
+            ),
+            title: Text(
+              '(+${snapData[index]['callingCode']}) ${snapData[index]['name']}',
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => CreateUserScreen(
+                    callingCode: snapData[index]['callingCode'],
+                    flag: snapData[index]['flag'],
+                    country: snapData[index]['name'],
+                    currency: snapData[index]['currencyDetails']['name'],
+                  ),
+                ),
+              );
+            },
+            // subtitle: Text('jgjgjgj'),
+          );
+        },
       ),
     );
   }

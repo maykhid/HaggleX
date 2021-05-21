@@ -4,6 +4,7 @@ import 'package:haggle_x/extras/buttons.dart';
 import 'package:haggle_x/extras/store.dart';
 import 'package:haggle_x/extras/validators.dart';
 import 'package:haggle_x/extras/widgets.dart';
+import 'package:haggle_x/main.dart';
 import 'package:haggle_x/screens/create_user.dart';
 import 'package:haggle_x/services/auth.dart';
 import 'package:provider/provider.dart';
@@ -88,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                CreateUserScreen(),
+                                ListCountriesScreen(),
                           ),
                         );
                       },

@@ -20,7 +20,6 @@ class Auth with ChangeNotifier {
 
   Status get status => _status;
 
-
   Future<String> createUser({
     @required String email,
     @required String username,
@@ -54,8 +53,7 @@ class Auth with ChangeNotifier {
 
     if (result.hasException) {
       print(result.exception.toString());
-      print(
-          'Errors Code ${result.exception.graphqlErrors}');
+      print('Errors Code ${result.exception.graphqlErrors}');
     }
 
     // print(result.data.toString());
@@ -86,9 +84,7 @@ class Auth with ChangeNotifier {
       print(result.exception.toString());
       print(
           'Errors Code ${result.exception.graphqlErrors[0].extensions['exception']['response']['statusCode']}');
-    }
-    
-    else {
+    } else {
       // await _keyStore.storeUserId(userId);
       return result.data['login']['token'];
     }
@@ -115,7 +111,8 @@ class Auth with ChangeNotifier {
       try {
         await _keyStore.storeToken(token);
         // This provider is just a temp fix. will correct later
-        Provider.of<KeyStore>(context, listen: false).updateKeyStatus(keyStatus.FoundToken);
+        Provider.of<KeyStore>(context, listen: false)
+            .updateKeyStatus(keyStatus.FoundToken);
       } catch (e) {
         print('Token is probably null: $e');
       }
@@ -165,7 +162,7 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getActiveCountries() async {
+  Future<List> getActiveCountries() async {
     GraphQLClient _client = _graphQlConfig.qlClientWithToken();
 
     QueryResult result = await _client.query(
@@ -181,6 +178,7 @@ class Auth with ChangeNotifier {
       // print('Errors Code ${result.exception.graphqlErrors[0].extensions['exception']['response']['statusCode']}');
     } else
       print('The result of countries: ${result.data['getActiveCountries']}');
+    return result.data['getActiveCountries'];
   }
 
   verifyUser(int verificationCode) async {

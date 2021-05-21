@@ -4,11 +4,14 @@ import 'package:haggle_x/extras/app_colors.dart';
 import 'package:haggle_x/extras/buttons.dart';
 import 'package:haggle_x/extras/validators.dart';
 import 'package:haggle_x/extras/widgets.dart';
+import 'package:haggle_x/main.dart';
 import 'package:haggle_x/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 class CreateUserScreen extends StatefulWidget {
+  final String currency, callingCode, flag, country;
+  CreateUserScreen({this.currency, this.callingCode, this.flag, this.country});
   @override
   _CreateUserScreenState createState() => _CreateUserScreenState();
 }
@@ -34,6 +37,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   @override
   Widget build(BuildContext context) {
     var verificationStatus = Provider.of<Auth>(context);
+    
     //
     return Scaffold(
         key: _scaffoldKey,
@@ -174,7 +178,6 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                     buttonColor: AppColors.purple,
                     buttonTextColor: Colors.white,
                     buttonText: "Verify me".toUpperCase(),
-
                     onPressed: () {
                       if (formKey.currentState.validate()) {
                         formKey.currentState.save();
@@ -217,6 +220,12 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   }
 
   _buildRegContainer() {
+
+    String currency = widget.currency;
+    String callingCode = widget.callingCode;
+    String flag = widget.flag;
+    String country = widget.country;
+
     return Form(
       key: formKey,
 
@@ -289,7 +298,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
               child: Row(
                 children: [
                   // flag country code holder
-                  FlagAndCountryCode(networkSvg: networkSvg),
+                  FlagAndCountryCode(networkSvg: getLinkSvg(flag), callingCode: callingCode),
 
                   SizedBox(
                     width: 1.0.w,
@@ -362,14 +371,14 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       _username,
                       _password,
                       _phonenumber,
-                      "Nigeria",
-                      "Naira",
-                      '234',
-                      'https://restcountries.eu/data/nga.svg',
+                      country,
+                      currency,
+                      callingCode,
+                      flag,
                       context,
                     );
-                  // Provider.of<Auth>(context, listen: false)
-                  //     .updateStatus(Status.shouldVerify);
+                    // Provider.of<Auth>(context, listen: false)
+                    //     .updateStatus(Status.shouldVerify);
                   }
                 },
               ),
